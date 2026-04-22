@@ -1,127 +1,21 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, ExternalLink, Search } from "lucide-react";
+import { ArrowLeft, ExternalLink, Moon, Search, Sun } from "lucide-react";
 import { FaRedhat } from "react-icons/fa6";
 import { Link } from "react-router-dom";
 import { PROJECTS } from "../data";
-import type { Project } from "../types";
+import type { ThemeMode } from "../types";
+import { GitHubIcon } from "../components/icon";
 
-function GitHubIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      aria-hidden="true"
-      className={className}
-    >
-      <path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.11.79-.25.79-.56v-2.17c-3.2.69-3.88-1.36-3.88-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.76 2.69 1.25 3.34.96.1-.74.4-1.25.72-1.54-2.56-.29-5.25-1.28-5.25-5.7 0-1.26.45-2.28 1.18-3.08-.12-.29-.51-1.47.11-3.07 0 0 .97-.31 3.17 1.18a10.9 10.9 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.62 1.6.23 2.78.11 3.07.73.8 1.18 1.82 1.18 3.08 0 4.43-2.69 5.4-5.26 5.69.41.35.78 1.04.78 2.1v3.12c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z" />
-    </svg>
-  );
-}
-
-function isLivePreviewableUrl(url: string) {
-  try {
-    const parsed = new URL(url);
-    return parsed.protocol === "http:" || parsed.protocol === "https:";
-  } catch {
-    return false;
-  }
-}
-
-function getLivePreviewSrc(project: Project) {
-  if (!isLivePreviewableUrl(project.link)) {
-    return project.image;
-  }
-
-  return `https://image.thum.io/get/width/900/crop/675/noanimate/${encodeURIComponent(project.link)}`;
-}
-
-function ProjectPreviewImage({ project }: { project: Project }) {
-  const [src, setSrc] = useState(project.image);
-  const [shouldLoadPreview, setShouldLoadPreview] = useState(false);
-  const containerRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    setSrc(project.image);
-    setShouldLoadPreview(false);
-  }, [project.id, project.image]);
-
-  useEffect(() => {
-    if (!isLivePreviewableUrl(project.link)) {
-      return;
-    }
-
-    const node = containerRef.current;
-    if (!node) {
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setShouldLoadPreview(true);
-          observer.disconnect();
-        }
-      },
-      { rootMargin: "200px" },
-    );
-
-    observer.observe(node);
-
-    return () => observer.disconnect();
-  }, [project.id, project.link]);
-
-  useEffect(() => {
-    if (!shouldLoadPreview) {
-      return;
-    }
-
-    const livePreviewSrc = getLivePreviewSrc(project);
-    if (livePreviewSrc === project.image) {
-      return;
-    }
-
-    let isCancelled = false;
-    const liveImage = new Image();
-    liveImage.referrerPolicy = "no-referrer";
-    liveImage.src = livePreviewSrc;
-    liveImage.onload = () => {
-      if (!isCancelled) {
-        setSrc(livePreviewSrc);
-      }
-    };
-    liveImage.onerror = () => {
-      if (!isCancelled) {
-        setSrc(project.image);
-      }
-    };
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [project.id, project.image, project.link, shouldLoadPreview]);
-
-  return (
-    <div ref={containerRef} className="w-full h-full">
-      <img
-        src={src}
-        alt={project.title}
-        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-        referrerPolicy="no-referrer"
-        loading="lazy"
-        decoding="async"
-        onError={() => {
-          if (src !== project.image) {
-            setSrc(project.image);
-          }
-        }}
-      />
-    </div>
-  );
-}
-
-export default function BrowseAll() {
+export default function BrowseAll({
+  theme,
+  onThemeToggle,
+}: {
+  theme: ThemeMode;
+  onThemeToggle: () => void;
+}) {
   const [searchQuery, setSearchQuery] = useState("");
+  const isDark = theme === "dark";
 
   const filteredProjects = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
@@ -139,44 +33,96 @@ export default function BrowseAll() {
   }, [searchQuery]);
 
   return (
-    <div className="min-h-screen bg-slate-50 font-sans text-slate-900">
-      <nav className="border-b border-slate-200 py-2 px-10 bg-white/80 backdrop-blur-md sticky top-0 z-50">
+    <div
+      className={`min-h-screen font-sans ${
+        isDark ? "bg-slate-950 text-slate-100" : "bg-slate-50 text-slate-900"
+      }`}
+    >
+      <nav
+        className={`border-b py-3 px-4 sm:px-6 lg:px-10 backdrop-blur-md sticky top-0 z-50 ${
+          isDark
+            ? "border-slate-800 bg-slate-950/80"
+            : "border-slate-200 bg-white/80"
+        }`}
+      >
         <div className="container mx-auto relative flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
           <Link
             to="/"
-            className="flex items-center gap-2 text-slate-500 hover:text-slate-900 transition-colors font-bold text-sm lg:absolute lg:left-0 lg:top-1/2 lg:-translate-y-1/2"
+            className={`inline-flex items-center gap-2 transition-colors font-bold text-sm lg:absolute lg:left-0 lg:top-1/2 lg:-translate-y-1/2 ${
+              isDark
+                ? "text-slate-300 hover:text-white"
+                : "text-slate-500 hover:text-slate-900"
+            }`}
           >
             <ArrowLeft className="w-4 h-4" />
             Go Back
           </Link>
 
-          <div className="flex items-center justify-center lg:absolute lg:right-0 lg:top-1/2 lg:-translate-y-1/2">
-            <div className="flex items-center gap-2 font-bold text-xl tracking-tight text-slate-900">
-              <div className="w-8 h-8 bg-slate-900 rounded-lg flex items-center justify-center text-white">
+          <div className="flex items-center justify-between gap-3 sm:justify-center lg:absolute lg:right-0 lg:top-1/2 lg:-translate-y-1/2">
+            <button
+              type="button"
+              onClick={onThemeToggle}
+              aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
+              className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-semibold transition-colors shrink-0 ${
+                isDark
+                  ? "border-slate-700 bg-slate-900 text-slate-100 hover:bg-slate-800"
+                  : "border-slate-200 bg-white text-slate-700 hover:bg-slate-100"
+              }`}
+            >
+              {isDark ? (
+                <Sun className="h-4 w-4" />
+              ) : (
+                <Moon className="h-4 w-4" />
+              )}
+              <span className="hidden sm:inline">
+                {isDark ? "Light" : "Dark"}
+              </span>
+            </button>
+            <div
+              className={`flex items-center gap-2 font-bold text-lg sm:text-xl tracking-tight ${
+                isDark ? "text-white" : "text-slate-900"
+              }`}
+            >
+              <div
+                className={`w-8 h-8 rounded-lg flex items-center justify-center text-white ${
+                  isDark ? "bg-white/10" : "bg-slate-900"
+                }`}
+              >
                 <FaRedhat />
               </div>
               <span>
-                Browse<span className="text-slate-500">.all</span>
+                Browse
+                <span className={isDark ? "text-slate-400" : "text-slate-500"}>
+                  .all
+                </span>
               </span>
             </div>
           </div>
 
-          <div className="relative w-full max-w-md mx-auto">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+          <div className="relative w-full max-w-md mx-auto lg:mx-auto">
+            <Search
+              className={`absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 ${
+                isDark ? "text-slate-500" : "text-slate-400"
+              }`}
+            />
             <input
               type="text"
               placeholder="Search projects..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-12 py-2 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-accent outline-none"
+              className={`w-full pl-12 pr-4 py-3 border rounded-2xl focus:ring-2 focus:ring-accent outline-none ${
+                isDark
+                  ? "bg-slate-900 border-slate-800 text-white placeholder:text-slate-500"
+                  : "bg-slate-50 border-slate-200"
+              }`}
             />
           </div>
         </div>
       </nav>
 
-      <main className="container mx-auto px-10 py-20">
+      <main className="container mx-auto px-4 sm:px-6 lg:px-10 py-10 sm:py-14 lg:py-20">
         {/* Results Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 h-full mx-auto">
           <AnimatePresence mode="popLayout">
             {filteredProjects.map((project, index) => (
               <motion.div
@@ -186,24 +132,39 @@ export default function BrowseAll() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{ duration: 0.2, delay: index * 0.05 }}
-                className="bg-white p-2 rounded-3xl border border-slate-200 overflow-hidden group shadow-sm hover:shadow-xl transition-all"
+                className={`rounded-3xl border overflow-hidden group shadow-sm hover:shadow-xl transition-all ${
+                  isDark
+                    ? "bg-slate-900 border-slate-800"
+                    : "bg-white border-slate-200"
+                }`}
               >
-                <div className="aspect-video bg-slate-100 rounded-2xl overflow-hidden mb-6 relative">
-                  <ProjectPreviewImage project={project} />
-                </div>
-                <div className="px-4 pb-6">
-                  <h3 className="font-bold text-xl text-slate-900 mb-2 group-hover:text-accent transition-colors">
+                <div className="p-6">
+                  <h3
+                    className={`font-bold text-xl mb-2 group-hover:text-accent transition-colors ${
+                      isDark ? "text-white" : "text-slate-900"
+                    }`}
+                  >
                     {project.title}
                   </h3>
-                  <p className="text-slate-500 text-sm leading-relaxed mb-6 line-clamp-2">
+                  <p
+                    className={`text-sm leading-relaxed mb-6 line-clamp-4 ${
+                      isDark ? "text-slate-300" : "text-slate-500"
+                    }`}
+                  >
                     {project.description}
                   </p>
-                  <div className="flex items-center justify-between pt-4 border-t border-slate-100">
+                  <div
+                    className={`flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between pt-4 border-t ${
+                      isDark ? "border-slate-800" : "border-slate-100"
+                    }`}
+                  >
                     <a
                       href={project.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-sm font-bold text-slate-900 hover:text-accent transition-colors"
+                      className={`inline-flex items-center gap-2 text-sm font-bold hover:text-accent transition-colors ${
+                        isDark ? "text-white" : "text-slate-900"
+                      }`}
                     >
                       View Project <ExternalLink className="w-4 h-4" />
                     </a>
@@ -212,9 +173,13 @@ export default function BrowseAll() {
                         href={project.github}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="p-2 text-slate-400 hover:text-slate-900 transition-colors"
+                        className={`p-2 transition-colors ${
+                          isDark
+                            ? "text-slate-400 hover:text-white"
+                            : "text-slate-400 hover:text-slate-900"
+                        }`}
                       >
-                        <GitHubIcon className="w-5 h-5" />
+                        <GitHubIcon className="w-7 h-7 " />
                       </a>
                     )}
                   </div>
@@ -225,11 +190,19 @@ export default function BrowseAll() {
 
           {filteredProjects.length === 0 && (
             <div className="col-span-full py-24 text-center">
-              <Search className="w-12 h-12 text-slate-200 mx-auto mb-6" />
-              <h3 className="text-2xl font-bold text-slate-900 mb-2">
+              <Search
+                className={`w-12 h-12 mx-auto mb-6 ${
+                  isDark ? "text-slate-700" : "text-slate-200"
+                }`}
+              />
+              <h3
+                className={`text-2xl font-bold mb-2 ${
+                  isDark ? "text-white" : "text-slate-900"
+                }`}
+              >
                 No results for "{searchQuery}"
               </h3>
-              <p className="text-slate-500">
+              <p className={isDark ? "text-slate-400" : "text-slate-500"}>
                 Try a different keyword or a shorter search term.
               </p>
             </div>

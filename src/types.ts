@@ -24,3 +24,5 @@ export interface ApiCategory {
   title: string;
   count: number;
 }
+
+export type ThemeMode = "light" | "dark";

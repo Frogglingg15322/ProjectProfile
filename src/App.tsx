@@ -1,135 +1,32 @@
-import { useEffect, useRef, useState } from "react";
-import { ExternalLink, Mail, Menu, X, Globe, Share2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import {
+  ExternalLink,
+  Mail,
+  Menu,
+  Moon,
+  Sun,
+  X,
+  Globe,
+  Share2,
+} from "lucide-react";
 import { FaRedhat } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import emailjs from "@emailjs/browser";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import Documentation from "./pages/Documentation";
 import BrowseAll from "./pages/BrowseAll";
-import type { Project, Tool, ApiCategory } from "./types";
+import type { Project, Tool, ApiCategory, ThemeMode } from "./types";
 import { PROJECTS, HOME_APIS, API_CATEGORIES } from "./data";
-
-// --- Components ---
-
-function GitHubIcon({ className }: { className?: string }) {
-  return (
-    <svg
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      aria-hidden="true"
-      className={className}
-    >
-      <path d="M12 .5C5.65.5.5 5.65.5 12a11.5 11.5 0 0 0 7.86 10.92c.58.11.79-.25.79-.56v-2.17c-3.2.69-3.88-1.36-3.88-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.05-.72.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.76 2.69 1.25 3.34.96.1-.74.4-1.25.72-1.54-2.56-.29-5.25-1.28-5.25-5.7 0-1.26.45-2.28 1.18-3.08-.12-.29-.51-1.47.11-3.07 0 0 .97-.31 3.17 1.18a10.9 10.9 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.62 1.6.23 2.78.11 3.07.73.8 1.18 1.82 1.18 3.08 0 4.43-2.69 5.4-5.26 5.69.41.35.78 1.04.78 2.1v3.12c0 .31.21.67.8.56A11.5 11.5 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5Z" />
-    </svg>
-  );
-}
-
-function isLivePreviewableUrl(url: string) {
-  try {
-    const parsed = new URL(url);
-    return parsed.protocol === "http:" || parsed.protocol === "https:";
-  } catch {
-    return false;
-  }
-}
-
-function getLivePreviewSrc(project: Project) {
-  if (!isLivePreviewableUrl(project.link)) {
-    return project.image;
-  }
-
-  return `https://image.thum.io/get/width/900/crop/675/noanimate/${encodeURIComponent(project.link)}`;
-}
-
-function ProjectPreviewImage({ project }: { project: Project }) {
-  const [src, setSrc] = useState(project.image);
-  const [shouldLoadPreview, setShouldLoadPreview] = useState(false);
-  const containerRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    setSrc(project.image);
-    setShouldLoadPreview(false);
-  }, [project.id, project.image]);
-
-  useEffect(() => {
-    if (!isLivePreviewableUrl(project.link)) {
-      return;
-    }
-
-    const node = containerRef.current;
-    if (!node) {
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setShouldLoadPreview(true);
-          observer.disconnect();
-        }
-      },
-      { rootMargin: "200px" },
-    );
-
-    observer.observe(node);
-
-    return () => observer.disconnect();
-  }, [project.id, project.link]);
-
-  useEffect(() => {
-    if (!shouldLoadPreview) {
-      return;
-    }
-
-    const livePreviewSrc = getLivePreviewSrc(project);
-    if (livePreviewSrc === project.image) {
-      return;
-    }
-
-    let isCancelled = false;
-    const liveImage = new Image();
-    liveImage.referrerPolicy = "no-referrer";
-    liveImage.src = livePreviewSrc;
-    liveImage.onload = () => {
-      if (!isCancelled) {
-        setSrc(livePreviewSrc);
-      }
-    };
-    liveImage.onerror = () => {
-      if (!isCancelled) {
-        setSrc(project.image);
-      }
-    };
-
-    return () => {
-      isCancelled = true;
-    };
-  }, [project.id, project.image, project.link, shouldLoadPreview]);
-  return (
-    <div ref={containerRef} className="w-full h-full">
-      <img
-        src={src}
-        alt={project.title}
-        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-        referrerPolicy="no-referrer"
-        loading="lazy"
-        decoding="async"
-        onError={() => {
-          if (src !== project.image) {
-            setSrc(project.image);
-          }
-        }}
-      />
-    </div>
-  );
-}
+import { GitHubIcon, DiscordIcon } from "./components/icon";
 
 function ContactModal({
   isOpen,
   onClose,
+  theme,
 }: {
   isOpen: boolean;
   onClose: () => void;
+  theme: ThemeMode;
 }) {
   const [formData, setFormData] = useState({
     name: "",
@@ -139,6 +36,7 @@ function ContactModal({
   const [status, setStatus] = useState<
     "idle" | "sending" | "success" | "error"
   >("idle");
+  const isDark = theme === "dark";
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -178,16 +76,30 @@ function ContactModal({
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden"
+            className={`relative w-full max-w-lg rounded-3xl shadow-2xl overflow-hidden ${
+              isDark ? "bg-slate-900" : "bg-white"
+            }`}
           >
             <div className="p-8 md:p-10">
               <div className="flex justify-between items-center mb-8">
-                <h2 className="text-3xl font-bold text-slate-900">Contact</h2>
+                <h2
+                  className={`text-3xl font-bold ${
+                    isDark ? "text-white" : "text-slate-900"
+                  }`}
+                >
+                  Contact
+                </h2>
                 <button
                   onClick={onClose}
-                  className="p-2 hover:bg-slate-100 rounded-full transition-colors"
+                  className={`p-2 rounded-full transition-colors ${
+                    isDark ? "hover:bg-slate-800" : "hover:bg-slate-100"
+                  }`}
                 >
-                  <X className="w-6 h-6 text-slate-500" />
+                  <X
+                    className={`w-6 h-6 ${
+                      isDark ? "text-slate-400" : "text-slate-500"
+                    }`}
+                  />
                 </button>
               </div>
 
@@ -200,23 +112,39 @@ function ContactModal({
                   <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6">
                     <Mail className="w-10 h-10" />
                   </div>
-                  <h3 className="text-2xl font-bold text-slate-900 mb-2">
+                  <h3
+                    className={`text-2xl font-bold mb-2 ${
+                      isDark ? "text-white" : "text-slate-900"
+                    }`}
+                  >
                     Message Sent!
                   </h3>
-                  <p className="text-slate-500 text-lg">
+                  <p
+                    className={`text-lg ${
+                      isDark ? "text-slate-300" : "text-slate-500"
+                    }`}
+                  >
                     I'll get back to you as soon as possible.
                   </p>
                 </motion.div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-6">
                   <div>
-                    <label className="block text-sm font-bold text-slate-700 mb-2">
+                    <label
+                      className={`block text-sm font-bold mb-2 ${
+                        isDark ? "text-slate-200" : "text-slate-700"
+                      }`}
+                    >
                       Name
                     </label>
                     <input
                       required
                       type="text"
-                      className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all"
+                      className={`w-full px-5 py-4 border rounded-2xl focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all ${
+                        isDark
+                          ? "bg-slate-950 border-slate-700 text-white"
+                          : "bg-slate-50 border-slate-200"
+                      }`}
                       value={formData.name}
                       onChange={(e) =>
                         setFormData({ ...formData, name: e.target.value })
@@ -224,13 +152,21 @@ function ContactModal({
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-bold text-slate-700 mb-2">
+                    <label
+                      className={`block text-sm font-bold mb-2 ${
+                        isDark ? "text-slate-200" : "text-slate-700"
+                      }`}
+                    >
                       Email
                     </label>
                     <input
                       required
                       type="email"
-                      className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all"
+                      className={`w-full px-5 py-4 border rounded-2xl focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all ${
+                        isDark
+                          ? "bg-slate-950 border-slate-700 text-white"
+                          : "bg-slate-50 border-slate-200"
+                      }`}
                       value={formData.email}
                       onChange={(e) =>
                         setFormData({ ...formData, email: e.target.value })
@@ -238,13 +174,21 @@ function ContactModal({
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-bold text-slate-700 mb-2">
+                    <label
+                      className={`block text-sm font-bold mb-2 ${
+                        isDark ? "text-slate-200" : "text-slate-700"
+                      }`}
+                    >
                       Message
                     </label>
                     <textarea
                       required
                       rows={4}
-                      className="w-full px-5 py-4 bg-slate-50 border border-slate-200 rounded-2xl focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all resize-none"
+                      className={`w-full px-5 py-4 border rounded-2xl focus:ring-2 focus:ring-accent focus:border-transparent outline-none transition-all resize-none ${
+                        isDark
+                          ? "bg-slate-950 border-slate-700 text-white"
+                          : "bg-slate-50 border-slate-200"
+                      }`}
                       value={formData.message}
                       onChange={(e) =>
                         setFormData({ ...formData, message: e.target.value })
@@ -254,7 +198,7 @@ function ContactModal({
                   <button
                     disabled={status === "sending"}
                     type="submit"
-                    className="w-full bg-accent text-white py-5 rounded-2xl font-bold text-lg hover:bg-indigo-700 disabled:bg-slate-300 disabled:cursor-not-allowed transition-all shadow-xl shadow-indigo-100 flex items-center justify-center gap-2"
+                    className="w-full bg-accent text-white py-5 rounded-2xl font-bold text-lg hover:bg-indigo-700 disabled:bg-slate-300 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
                   >
                     {status === "sending" ? (
                       <>
@@ -280,9 +224,18 @@ function ContactModal({
   );
 }
 
-function Navbar({ onContactClick }: { onContactClick: () => void }) {
+function Navbar({
+  onContactClick,
+  theme,
+  onThemeToggle,
+}: {
+  onContactClick: () => void;
+  theme: ThemeMode;
+  onThemeToggle: () => void;
+}) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const isDark = theme === "dark";
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -292,13 +245,21 @@ function Navbar({ onContactClick }: { onContactClick: () => void }) {
 
   return (
     <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? "py-3 bg-white/80 backdrop-blur-md border-b border-slate-200" : "py-6 bg-transparent"}`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled
+          ? isDark
+            ? "py-3 bg-slate-950/80 backdrop-blur-md border-b border-slate-800"
+            : "py-3 bg-white/80 backdrop-blur-md border-b border-slate-200"
+          : "py-6 bg-transparent"
+      }`}
     >
       <div className="container mx-auto px-10 flex justify-between items-center">
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="flex items-center gap-2 font-bold text-xl tracking-tight text-slate-900"
+          className={`flex items-center gap-2 font-bold text-xl tracking-tight ${
+            isDark ? "text-white" : "text-slate-900"
+          }`}
         >
           <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center text-white">
             <FaRedhat />
@@ -315,7 +276,13 @@ function Navbar({ onContactClick }: { onContactClick: () => void }) {
               key={item}
               whileHover={{ color: "#4f46e5" }}
               href={`#${item.toLowerCase()}`}
-              className={`${idx === 0 ? "text-accent" : "text-slate-500"} hover:text-slate-900 transition-colors`}
+              className={`transition-colors ${
+                idx === 0
+                  ? "text-accent"
+                  : isDark
+                    ? "text-slate-300 hover:text-white"
+                    : "text-slate-500 hover:text-slate-900"
+              }`}
             >
               {item}
             </motion.a>
@@ -323,19 +290,61 @@ function Navbar({ onContactClick }: { onContactClick: () => void }) {
           <motion.button
             whileHover={{ color: "#4f46e5" }}
             onClick={onContactClick}
-            className="text-slate-500 hover:text-slate-900 transition-colors"
+            className={`transition-colors ${
+              isDark
+                ? "text-slate-300 hover:text-white"
+                : "text-slate-500 hover:text-slate-900"
+            }`}
           >
             Contact
           </motion.button>
+          <button
+            type="button"
+            onClick={onThemeToggle}
+            aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
+            className={`inline-flex items-center gap-2 rounded-full border px-3 py-2 transition-colors ${
+              isDark
+                ? "border-slate-700 bg-slate-900 text-slate-100 hover:bg-slate-800"
+                : "border-slate-200 bg-white text-slate-700 hover:bg-slate-100"
+            }`}
+          >
+            {isDark ? (
+              <Sun className="h-4 w-4" />
+            ) : (
+              <Moon className="h-4 w-4" />
+            )}
+            <span className="text-xs font-semibold">
+              {isDark ? "Light" : "Dark"}
+            </span>
+          </button>
         </div>
 
-        {/* Mobile Toggle */}
-        <button
-          className="md:hidden text-slate-900"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        >
-          {isMobileMenuOpen ? <X /> : <Menu />}
-        </button>
+        <div className="flex items-center gap-3 md:hidden">
+          <button
+            type="button"
+            onClick={onThemeToggle}
+            aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
+            className={`rounded-full border p-2 transition-colors ${
+              isDark
+                ? "border-slate-700 bg-slate-900 text-slate-100 hover:bg-slate-800"
+                : "border-slate-200 bg-white text-slate-700 hover:bg-slate-100"
+            }`}
+          >
+            {isDark ? (
+              <Sun className="h-4 w-4" />
+            ) : (
+              <Moon className="h-4 w-4" />
+            )}
+          </button>
+
+          {/* Mobile Toggle */}
+          <button
+            className={isDark ? "text-white" : "text-slate-900"}
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            {isMobileMenuOpen ? <X /> : <Menu />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Menu */}
@@ -345,21 +354,33 @@ function Navbar({ onContactClick }: { onContactClick: () => void }) {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white border-t border-slate-200 shadow-xl"
+            className={`md:hidden shadow-xl ${
+              isDark
+                ? "bg-slate-950 border-t border-slate-800"
+                : "bg-white border-t border-slate-200"
+            }`}
           >
             <div className="flex flex-col p-6 gap-4">
               {["Work", "Projects", "APIs"].map((item) => (
                 <a
                   key={item}
                   href={`#${item.toLowerCase()}`}
-                  className="text-lg font-medium text-slate-500 hover:text-slate-900"
+                  className={`text-lg font-medium ${
+                    isDark
+                      ? "text-slate-300 hover:text-white"
+                      : "text-slate-500 hover:text-slate-900"
+                  }`}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   {item}
                 </a>
               ))}
               <button
-                className="text-left text-lg font-medium text-slate-500 hover:text-slate-900"
+                className={`text-left text-lg font-medium ${
+                  isDark
+                    ? "text-slate-300 hover:text-white"
+                    : "text-slate-500 hover:text-slate-900"
+                }`}
                 onClick={() => {
                   onContactClick();
                   setIsMobileMenuOpen(false);
@@ -375,11 +396,15 @@ function Navbar({ onContactClick }: { onContactClick: () => void }) {
   );
 }
 
-function Hero() {
+function Hero({ theme }: { theme: ThemeMode }) {
+  const isDark = theme === "dark";
+
   return (
     <section
       id="work"
-      className="relative min-h-screen flex items-center bg-white overflow-hidden"
+      className={`relative min-h-screen flex items-center overflow-hidden ${
+        isDark ? "bg-slate-950" : "bg-white"
+      }`}
     >
       <div className="container mx-auto px-10 relative z-10 pt-20">
         <div className="grid lg:grid-cols-2 gap-10 items-center">
@@ -389,11 +414,19 @@ function Hero() {
             transition={{ duration: 0.6 }}
             className="space-y-6"
           >
-            <h1 className="text-5xl lg:text-6xl font-extrabold text-slate-900 leading-tight">
+            <h1
+              className={`text-5xl lg:text-6xl font-extrabold leading-tight ${
+                isDark ? "text-white" : "text-slate-900"
+              }`}
+            >
               Creative developer building <br />
               <span className="text-accent">digital solutions.</span>
             </h1>
-            <p className="text-slate-500 text-lg max-w-md leading-relaxed">
+            <p
+              className={`text-lg max-w-md leading-relaxed ${
+                isDark ? "text-slate-300" : "text-slate-500"
+              }`}
+            >
               I specialize in building clean, high-performance web applications
               and robust API architectures for modern startups.
             </p>
@@ -403,7 +436,11 @@ function Hero() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="View GitHub profile"
-                className="inline-flex items-center justify-center rounded-full p-3 text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors"
+                className={`inline-flex items-center justify-center rounded-full p-3 transition-colors ${
+                  isDark
+                    ? "text-slate-300 hover:text-white hover:bg-slate-900"
+                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                }`}
               >
                 <GitHubIcon className="w-10 h-10" />
               </a>
@@ -472,43 +509,63 @@ interface ProjectCardProps {
   key?: React.Key;
 }
 
-function ProjectCard({ project, index }: ProjectCardProps) {
+function ProjectCard({
+  project,
+  index,
+  theme,
+}: ProjectCardProps & { theme: ThemeMode }) {
+  const isDark = theme === "dark";
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: index * 0.1 }}
-      className="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow group overflow-hidden"
+      className={`rounded-2xl border shadow-sm hover:shadow-md transition-shadow group overflow-hidden ${
+        isDark ? "bg-slate-900 border-slate-800" : "bg-white border-slate-200"
+      }`}
     >
-      <div className="relative aspect-[4/3] overflow-hidden">
-        <ProjectPreviewImage project={project} />
-      </div>
-
       <div className="p-8">
-        <h3 className="font-bold text-xl mb-3 text-slate-900">
+        <h3
+          className={`font-bold text-xl mb-3 ${
+            isDark ? "text-white" : "text-slate-900"
+          }`}
+        >
           {project.title}
         </h3>
-        <p className="text-slate-500 text-sm mb-6 leading-relaxed">
+        <p
+          className={`text-sm mb-6 leading-relaxed ${
+            isDark ? "text-slate-300" : "text-slate-500"
+          }`}
+        >
           {project.description}
         </p>
 
         <div className="flex items-center justify-between mt-auto">
           <a
             href={project.link}
-            className="inline-flex items-center gap-1 text-sm font-bold text-slate-900 underline decoration-slate-300 hover:decoration-accent transition-all"
+            className={`inline-flex items-center gap-1 text-sm font-bold hover:text-accent transition-all ${
+              isDark
+                ? "text-slate-100 decoration-slate-600 hover:decoration-accent"
+                : "text-slate-900 decoration-slate-300 hover:decoration-accent"
+            }`}
           >
-            View Project <ExternalLink className="w-3 h-3 ml-1" />
+            View Project <ExternalLink className="w-4 h-4 ml-1" />
           </a>
           {project.github && (
             <a
               href={project.github}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2 text-slate-400 hover:text-slate-900 transition-colors"
+              className={`p-2 transition-colors  ${
+                isDark
+                  ? "text-slate-400 hover:text-white"
+                  : "text-slate-400 hover:text-slate-900"
+              }`}
               title="View Source on GitHub"
             >
-              <GitHubIcon className="w-5 h-5" />
+              <GitHubIcon className="w-7 h-7 " />
             </a>
           )}
         </div>
@@ -523,8 +580,13 @@ interface ToolCardProps {
   key?: string | number;
 }
 
-function ToolCard({ tool, index }: ToolCardProps) {
+function ToolCard({
+  tool,
+  index,
+  theme,
+}: ToolCardProps & { theme: ThemeMode }) {
   const Icon = tool.icon;
+  const isDark = theme === "dark";
   return (
     <motion.a
       href={tool.link}
@@ -533,16 +595,26 @@ function ToolCard({ tool, index }: ToolCardProps) {
       viewport={{ once: true }}
       transition={{ delay: index * 0.05 }}
       whileHover={{ y: -4 }}
-      className="bg-white px-5 py-4 rounded-xl flex items-center gap-4 border border-slate-100 shadow-sm hover:shadow-md transition-all group"
+      className={`px-5 py-4 rounded-xl flex items-center gap-4 border shadow-sm hover:shadow-md transition-all group ${
+        isDark ? "bg-slate-900 border-slate-800" : "bg-white border-slate-100"
+      }`}
     >
-      <div className="p-2.5 bg-slate-50 text-slate-800 rounded-lg group-hover:bg-accent group-hover:text-white transition-colors">
+      <div
+        className={`p-2.5 rounded-lg group-hover:bg-accent group-hover:text-white transition-colors ${
+          isDark ? "bg-slate-800 text-slate-100" : "bg-slate-50 text-slate-800"
+        }`}
+      >
         <Icon className="w-5 h-5" />
       </div>
       <div>
         <h4 className="text-sm font-bold text-indigo-600 mb-0.5">
           {tool.title}
         </h4>
-        <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
+        <p
+          className={`text-[10px] font-black uppercase tracking-widest ${
+            isDark ? "text-slate-500" : "text-slate-400"
+          }`}
+        >
           {tool.category}
         </p>
       </div>
@@ -556,17 +628,29 @@ interface CategoryCardProps {
   key?: React.Key;
 }
 
-function CategoryCard({ category, index }: CategoryCardProps) {
+function CategoryCard({
+  category,
+  index,
+  theme,
+}: CategoryCardProps & { theme: ThemeMode }) {
+  const isDark = theme === "dark";
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: index * 0.05 }}
-      className="bg-white p-6 rounded-xl border border-slate-100 shadow-sm hover:shadow-md transition-all group cursor-pointer"
+      className={`p-6 rounded-xl border shadow-sm hover:shadow-md transition-all group cursor-pointer ${
+        isDark ? "bg-slate-900 border-slate-800" : "bg-white border-slate-100"
+      }`}
     >
       <Link to="/docs" className="block">
-        <h4 className="text-base font-bold text-slate-700 mb-1 group-hover:text-accent transition-colors">
+        <h4
+          className={`text-base font-bold mb-1 group-hover:text-accent transition-colors ${
+            isDark ? "text-slate-100" : "text-slate-700"
+          }`}
+        >
           {category.title}
         </h4>
         <p className="text-sm font-bold text-accent">{category.count} APIs</p>
@@ -575,12 +659,15 @@ function CategoryCard({ category, index }: CategoryCardProps) {
   );
 }
 
-function Footer() {
+function Footer({ theme }: { theme: ThemeMode }) {
   const currentYear = new Date().getFullYear();
+  const isDark = theme === "dark";
   return (
     <footer
       id="contact"
-      className="px-10 py-10 bg-slate-900 text-slate-400 text-sm"
+      className={`px-10 py-10 text-sm ${
+        isDark ? "bg-slate-900 text-slate-400" : "bg-white text-slate-500"
+      }`}
     >
       <div className="container mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
         <div className="flex gap-12 text-center md:text-left">
@@ -591,8 +678,14 @@ function Footer() {
             </p>
           </div> */}
           <div>
-            <p className="text-white font-semibold mb-2">Location</p>
-            <p>Philippines, Iligan City</p>
+            <p
+              className={`font-semibold mb-2 ${
+                isDark ? "text-white" : "text-slate-900"
+              }`}
+            >
+              Location
+            </p>
+            <p>Philippines, Lanao Del Norte</p>
           </div>
         </div>
 
@@ -600,24 +693,40 @@ function Footer() {
           <div className="flex items-center gap-6">
             <a
               href="#"
-              className="p-2 rounded-full hover:bg-slate-800 hover:text-white transition-all"
+              className={`p-2 rounded-full transition-all ${
+                isDark
+                  ? "hover:bg-slate-800 hover:text-white"
+                  : "hover:bg-slate-100 hover:text-slate-900"
+              }`}
             >
               <GitHubIcon className="w-5 h-5" />
             </a>
             <a
               href="#"
-              className="p-2 rounded-full hover:bg-slate-800 hover:text-white transition-all"
+              className={`p-2 rounded-full transition-all ${
+                isDark
+                  ? "hover:bg-slate-800 hover:text-white"
+                  : "hover:bg-slate-100 hover:text-slate-900"
+              }`}
             >
-              <Globe className="w-5 h-5" />
+              <DiscordIcon className="w-5 h-5" />
             </a>
             <a
               href="#"
-              className="p-2 rounded-full hover:bg-slate-800 hover:text-white transition-all"
+              className={`p-2 rounded-full transition-all ${
+                isDark
+                  ? "hover:bg-slate-800 hover:text-white"
+                  : "hover:bg-slate-100 hover:text-slate-900"
+              }`}
             >
               <Share2 className="w-5 h-5" />
             </a>
           </div>
-          <div className="hidden md:block h-8 w-px bg-slate-700"></div>
+          <div
+            className={`hidden md:block h-8 w-px ${
+              isDark ? "bg-slate-700" : "bg-slate-200"
+            }`}
+          ></div>
           <p>© {currentYear} Portfolio. All rights reserved.</p>
         </div>
       </div>
@@ -625,19 +734,36 @@ function Footer() {
   );
 }
 
-function Home() {
+function Home({
+  theme,
+  onThemeToggle,
+}: {
+  theme: ThemeMode;
+  onThemeToggle: () => void;
+}) {
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
 
+  const isDark = theme === "dark";
+
   return (
-    <div className="min-h-screen bg-slate-50 font-sans text-slate-900">
-      <Navbar onContactClick={() => setIsContactModalOpen(true)} />
+    <div
+      className={`min-h-screen font-sans transition-colors ${
+        isDark ? "bg-slate-950 text-slate-100" : "bg-slate-50 text-slate-900"
+      }`}
+    >
+      <Navbar
+        onContactClick={() => setIsContactModalOpen(true)}
+        theme={theme}
+        onThemeToggle={onThemeToggle}
+      />
       <ContactModal
         isOpen={isContactModalOpen}
         onClose={() => setIsContactModalOpen(false)}
+        theme={theme}
       />
 
       <main className="space-y-12">
-        <Hero />
+        <Hero theme={theme} />
 
         {/* Projects Section */}
         <section
@@ -646,12 +772,16 @@ function Home() {
         >
           <div className="container mx-auto">
             <div className="flex justify-between items-end mb-8">
-              <h2 className="text-3xl font-bold text-slate-800 tracking-tight">
+              <h2
+                className={`text-3xl font-bold tracking-tight ${
+                  isDark ? "text-white" : "text-slate-800"
+                }`}
+              >
                 Selected Projects
               </h2>
               <Link
                 to="/browse"
-                className="text-sm text-accent font-bold cursor-pointer hover:underline"
+                className="text-sm text-accent font-bold cursor-pointer hover:text-indigo-900"
               >
                 Browse All &rarr;
               </Link>
@@ -659,7 +789,12 @@ function Home() {
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
               {PROJECTS.slice(0, 6).map((project, index) => (
-                <ProjectCard key={project.id} project={project} index={index} />
+                <ProjectCard
+                  key={project.id}
+                  project={project}
+                  index={index}
+                  theme={theme}
+                />
               ))}
             </div>
           </div>
@@ -668,46 +803,88 @@ function Home() {
         {/* Tools/API Section */}
         <section
           id="apis"
-          className="px-10 min-h-screen flex items-center py-20 bg-white border-y border-slate-200"
+          className={`px-10 min-h-screen flex items-center py-20 border-y ${
+            isDark
+              ? "bg-slate-900 border-slate-800"
+              : "bg-white border-slate-200"
+          }`}
         >
           <div className="container mx-auto">
             <div className="flex justify-between items-end mb-12">
-              <h2 className="text-3xl font-bold text-slate-800 tracking-tight">
-                API Tools
+              <h2
+                className={`text-3xl font-bold tracking-tight ${
+                  isDark ? "text-white" : "text-slate-800"
+                }`}
+              >
+                APIs
               </h2>
               <Link
                 to="/docs"
-                className="text-sm text-accent font-bold cursor-pointer hover:underline"
+                className="text-sm text-accent font-bold cursor-pointer hover:text-indigo-900 "
               >
-                Documentation &rarr;
+                Browse APIs &rarr;
               </Link>
             </div>
 
             <div className="grid lg:grid-cols-2 gap-12">
               {/* TO START */}
-              <div className="bg-slate-100/50 rounded-3xl p-8 md:p-10 border border-slate-200/60">
+              <div
+                className={`rounded-3xl p-8 md:p-10 border ${
+                  isDark
+                    ? "bg-slate-900/70 border-slate-800"
+                    : "bg-slate-100/50 border-slate-200/60"
+                }`}
+              >
                 <div className="mb-8">
-                  <span className="px-4 py-1.5 bg-white text-accent text-[10px] font-black uppercase tracking-widest rounded-md border border-slate-200/50 shadow-sm">
+                  <span
+                    className={`px-4 py-1.5 text-accent text-[12px] font-black uppercase tracking-widest rounded-md border shadow-sm ${
+                      isDark
+                        ? "bg-slate-950 border-slate-800"
+                        : "bg-white border-slate-200/50"
+                    }`}
+                  >
                     To Start
                   </span>
                 </div>
                 <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
                   {HOME_APIS.map((tool, index) => (
-                    <ToolCard key={tool.id} tool={tool} index={index} />
+                    <ToolCard
+                      key={tool.id}
+                      tool={tool}
+                      index={index}
+                      theme={theme}
+                    />
                   ))}
                 </div>
               </div>
 
               {/* BY CATEGORY */}
-              <div className="bg-slate-100/50 rounded-3xl p-8 md:p-10 border border-slate-200/60">
+              <div
+                className={`rounded-3xl p-8 md:p-10 border ${
+                  isDark
+                    ? "bg-slate-900/70 border-slate-800"
+                    : "bg-slate-100/50 border-slate-200/60"
+                }`}
+              >
                 <div className="mb-8">
-                  <span className="px-4 py-1.5 bg-white text-accent text-[10px] font-black uppercase tracking-widest rounded-md border border-slate-200/50 shadow-sm">
+                  <span
+                    className={`px-4 py-1.5 text-accent text-[12px] font-black uppercase tracking-widest rounded-md border shadow-sm ${
+                      isDark
+                        ? "bg-slate-950 border-slate-800"
+                        : "bg-white border-slate-200/50"
+                    }`}
+                  >
                     By Category
                   </span>
                 </div>
                 <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
                   {API_CATEGORIES.map((cat, index) => (
-                    <CategoryCard key={cat.id} category={cat} index={index} />
+                    <CategoryCard
+                      key={cat.id}
+                      category={cat}
+                      index={index}
+                      theme={theme}
+                    />
                   ))}
                 </div>
               </div>
@@ -716,33 +893,75 @@ function Home() {
         </section>
 
         {/* Final CTA/Contact info */}
-        <section className="px-10 py-32 text-center bg-slate-50 relative overflow-hidden">
+        <section
+          className={`px-10 py-32 text-center relative overflow-hidden ${
+            isDark ? "bg-slate-950" : "bg-slate-50"
+          }`}
+        >
           <div className="max-w-3xl mx-auto relative z-10">
-            <h2 className="text-4xl md:text-6xl font-extrabold text-slate-900 mb-8">
+            <h2
+              className={`text-4xl md:text-6xl font-extrabold mb-8 ${
+                isDark ? "text-white" : "text-slate-900"
+              }`}
+            >
               Let's build something <br /> awesome together.
             </h2>
             <button
               onClick={() => setIsContactModalOpen(true)}
-              className="bg-accent text-white px-10 py-5 rounded-full font-bold text-lg hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-200"
+              className="bg-accent text-white px-10 py-5 rounded-full font-bold text-lg hover:bg-indigo-700 transition-all "
             >
-              Contact Me
+              Contact Us
             </button>
           </div>
         </section>
       </main>
 
-      <Footer />
+      <Footer theme={theme} />
     </div>
   );
 }
 
 export default function App() {
+  const [theme, setTheme] = useState<ThemeMode>("light");
+
+  useEffect(() => {
+    const storedTheme = window.localStorage.getItem("theme-mode");
+    if (storedTheme === "light" || storedTheme === "dark") {
+      setTheme(storedTheme);
+      return;
+    }
+
+    const preferredTheme = window.matchMedia("(prefers-color-scheme: dark)")
+      .matches
+      ? "dark"
+      : "light";
+    setTheme(preferredTheme);
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", theme === "dark");
+    window.localStorage.setItem("theme-mode", theme);
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((currentTheme) => (currentTheme === "dark" ? "light" : "dark"));
+  };
+
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/docs" element={<Documentation />} />
-        <Route path="/browse" element={<BrowseAll />} />
+        <Route
+          path="/"
+          element={<Home theme={theme} onThemeToggle={toggleTheme} />}
+        />
+        <Route
+          path="/docs"
+          element={<Documentation theme={theme} onThemeToggle={toggleTheme} />}
+        />
+        <Route
+          path="/browse"
+          element={<BrowseAll theme={theme} onThemeToggle={toggleTheme} />}
+        />
       </Routes>
     </BrowserRouter>
   );

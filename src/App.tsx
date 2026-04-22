@@ -1,14 +1,5 @@
 import { useEffect, useState } from "react";
-import {
-  ExternalLink,
-  Mail,
-  Menu,
-  Moon,
-  Sun,
-  X,
-  Globe,
-  Share2,
-} from "lucide-react";
+import { ExternalLink, Mail, Menu, Moon, Sun, X, Share2 } from "lucide-react";
 import { FaRedhat } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import emailjs from "@emailjs/browser";

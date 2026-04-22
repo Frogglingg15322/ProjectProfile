@@ -36,7 +36,6 @@ import {
   Search,
   Cpu,
 } from "lucide-react";
-import { LiaStripe } from "react-icons/lia";
 import { type Project, type Tool, type ApiCategory } from "./types";
 
 export const PROJECTS: Project[] = [

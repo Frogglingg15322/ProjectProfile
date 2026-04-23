@@ -3,8 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, ExternalLink, Moon, Search, Sun } from "lucide-react";
 import { FaRedhat } from "react-icons/fa6";
 import { Link } from "react-router-dom";
-import { PROJECTS } from "../data";
-import type { ThemeMode } from "../types";
+import { PROJECTS } from "../datafile/data";
+import type { ThemeMode } from "../datafile/types";
 import { GitHubIcon } from "../components/icon";
 
 export default function BrowseAll({

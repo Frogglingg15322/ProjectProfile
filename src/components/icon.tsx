@@ -1,4 +1,4 @@
-// ── ENTERTAINMENT ──────────────────────────────────────────────
+//ENTERTAINMENT
 
 export function TMDBIcon({ className }: { className?: string }) {
   return (
@@ -39,7 +39,7 @@ export function YouTubeIcon({ className }: { className?: string }) {
   );
 }
 
-// ── FINANCE ───────────────────────────────────────────────────
+//FINANCE
 
 export function StripeIcon({ className }: { className?: string }) {
   return (
@@ -80,7 +80,7 @@ export function CoinGeckoIcon({ className }: { className?: string }) {
   );
 }
 
-// ── DEV TOOLS ──────────────────────────────────────────────────
+// DEV TOOLS
 
 export function GitHubIcon({ className }: { className?: string }) {
   return (
@@ -121,7 +121,7 @@ export function CloudinaryIcon({ className }: { className?: string }) {
   );
 }
 
-// ── GEOLOCATION ────────────────────────────────────────────────
+// Geolocation
 
 export function GoogleMapsIcon({ className }: { className?: string }) {
   return (
@@ -149,7 +149,7 @@ export function OpenWeatherIcon({ className }: { className?: string }) {
   );
 }
 
-// ── SCRAPING ───────────────────────────────────────────────────
+//SCRAPING
 
 export function ScraperAPIIcon({ className }: { className?: string }) {
   return (
@@ -177,7 +177,7 @@ export function BrowserlessIcon({ className }: { className?: string }) {
   );
 }
 
-// ── SECURITY ───────────────────────────────────────────────────
+//SECURITY
 
 export function Auth0Icon({ className }: { className?: string }) {
   return (
@@ -205,7 +205,7 @@ export function HIBPIcon({ className }: { className?: string }) {
   );
 }
 
-// ── BUSINESS ───────────────────────────────────────────────────
+// BUSINESS
 
 export function AirtableIcon({ className }: { className?: string }) {
   return (
@@ -246,7 +246,7 @@ export function FacebookIcon({ className }: { className?: string }) {
   );
 }
 
-// ── COMMUNICATION ──────────────────────────────────────────────
+//COMMUNICATION
 
 export function TwilioIcon({ className }: { className?: string }) {
   return (
@@ -287,7 +287,7 @@ export function MailchimpIcon({ className }: { className?: string }) {
   );
 }
 
-// ── AI/ML ──────────────────────────────────────────────────────
+//AI/ML
 
 export function OpenAIIcon({ className }: { className?: string }) {
   return (
@@ -328,7 +328,7 @@ export function GoogleVisionIcon({ className }: { className?: string }) {
   );
 }
 
-// ── MARKETING ──────────────────────────────────────────────────
+//MARKETING
 
 export function NewsAPIIcon({ className }: { className?: string }) {
   return (

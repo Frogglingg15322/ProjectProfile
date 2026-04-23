@@ -6,8 +6,8 @@ import emailjs from "@emailjs/browser";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import Documentation from "./pages/Documentation";
 import BrowseAll from "./pages/BrowseAll";
-import type { Project, Tool, ApiCategory, ThemeMode } from "./types";
-import { PROJECTS, HOME_APIS, API_CATEGORIES } from "./data";
+import type { Project, Tool, ApiCategory, ThemeMode } from "./datafile/types";
+import { PROJECTS, HOME_APIS, API_CATEGORIES } from "./datafile/data";
 import { GitHubIcon, DiscordIcon } from "./components/icon";
 
 function ContactModal({
@@ -663,11 +663,11 @@ function Footer({ theme }: { theme: ThemeMode }) {
       <div className="container mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
         <div className="flex gap-12 text-center md:text-left">
           {/* <div>
-            <p className="text-white font-semibold mb-2">Contact</p>
-            <p className="hover:text-white transition-colors cursor-pointer">
-              hello@portfolio.io
-            </p>
-          </div> */}
+              <p className="text-white font-semibold mb-2">Contact</p>
+              <p className="hover:text-white transition-colors cursor-pointer">
+                hello@portfolio.io
+              </p>
+            </div> */}
           <div>
             <p
               className={`font-semibold mb-2 ${
@@ -683,7 +683,7 @@ function Footer({ theme }: { theme: ThemeMode }) {
         <div className="flex flex-col md:flex-row items-center gap-8">
           <div className="flex items-center gap-6">
             <a
-              href="#"
+              href=""
               className={`p-2 rounded-full transition-all ${
                 isDark
                   ? "hover:bg-slate-800 hover:text-white"
@@ -757,10 +757,7 @@ function Home({
         <Hero theme={theme} />
 
         {/* Projects Section */}
-        <section
-          id="projects"
-          className="px-10 min-h-screen flex items-center py-20"
-        >
+        <section id="projects" className="px-10 min-h-screen flex  py-20">
           <div className="container mx-auto">
             <div className="flex justify-between items-end mb-8">
               <h2
@@ -791,10 +788,10 @@ function Home({
           </div>
         </section>
 
-        {/* Tools/API Section */}
+        {/* API Section */}
         <section
           id="apis"
-          className={`px-10 min-h-screen flex items-center py-20 border-y ${
+          className={`px-10 min-h-screen flex py-20 border-y ${
             isDark
               ? "bg-slate-900 border-slate-800"
               : "bg-white border-slate-200"
@@ -836,8 +833,11 @@ function Home({
                   >
                     To Start
                   </span>
+                  <p
+                    className={`text-sm max-w-md p-4 ${isDark ? "text-slate-300" : "text-slate-500"}`}
+                  ></p>
                 </div>
-                <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
+                <div className="grid lg:grid-cols-2 xl:grid-cols-3 gap-4 ">
                   {HOME_APIS.map((tool, index) => (
                     <ToolCard
                       key={tool.id}
@@ -883,7 +883,7 @@ function Home({
           </div>
         </section>
 
-        {/* Final CTA/Contact info */}
+        {/* Contact info */}
         <section
           className={`px-10 py-32 text-center relative overflow-hidden ${
             isDark ? "bg-slate-950" : "bg-slate-50"

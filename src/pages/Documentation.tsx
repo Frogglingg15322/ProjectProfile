@@ -12,8 +12,8 @@ import {
 } from "lucide-react";
 import { FaRedhat } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { DOCS_APIS } from "../data";
-import type { ThemeMode } from "../types";
+import { DOCS_APIS } from "../datafile/apidocs";
+import type { ThemeMode } from "../datafile/types";
 
 export default function Documentation({
   theme,

@@ -20,51 +20,6 @@ export const PROJECTS: Project[] = [
     github: "https://github.com/Coder-Hunter-z/Movies",
     image: "src/assets/ptmovies.png",
   },
-  {
-    id: "1",
-    title: "PTMovies",
-    description:
-      "A movie recommendation web application built with React, JavaScript, and Tailwind CSS. It fetches data from the TMDB API to provide users with movie details, recommendations, and a seamless browsing experience.",
-    link: "https://ptmovies.vercel.app/",
-    github: "https://github.com/Coder-Hunter-z/Movies",
-    image: "src/assets/ptmovies.png",
-  },
-  {
-    id: "1",
-    title: "PTMovies",
-    description:
-      "A movie recommendation web application built with React, JavaScript, and Tailwind CSS. It fetches data from the TMDB API to provide users with movie details, recommendations, and a seamless browsing experience.",
-    link: "https://ptmovies.vercel.app/",
-    github: "https://github.com/Coder-Hunter-z/Movies",
-    image: "src/assets/ptmovies.png",
-  },
-  {
-    id: "1",
-    title: "PTMovies",
-    description:
-      "A movie recommendation web application built with React, JavaScript, and Tailwind CSS. It fetches data from the TMDB API to provide users with movie details, recommendations, and a seamless browsing experience.",
-    link: "https://ptmovies.vercel.app/",
-    github: "https://github.com/Coder-Hunter-z/Movies",
-    image: "src/assets/ptmovies.png",
-  },
-  {
-    id: "1",
-    title: "PTMovies",
-    description:
-      "A movie recommendation web application built with React, JavaScript, and Tailwind CSS. It fetches data from the TMDB API to provide users with movie details, recommendations, and a seamless browsing experience.",
-    link: "https://ptmovies.vercel.app/",
-    github: "https://github.com/Coder-Hunter-z/Movies",
-    image: "src/assets/ptmovies.png",
-  },
-  {
-    id: "1",
-    title: "PTMovies",
-    description:
-      "A movie recommendation web application built with React, JavaScript, and Tailwind CSS. It fetches data from the TMDB API to provide users with movie details, recommendations, and a seamless browsing experience.",
-    link: "https://ptmovies.vercel.app/",
-    github: "https://github.com/Coder-Hunter-z/Movies",
-    image: "src/assets/ptmovies.png",
-  },
 ];
 
 export const HOME_APIS: Tool[] = [
@@ -154,7 +109,6 @@ export const HOME_APIS: Tool[] = [
   },
 ];
 
-// Add this for backward compatibility or if needed by other components
 export const TOOLS = [...HOME_APIS];
 
 export const API_CATEGORIES: ApiCategory[] = [

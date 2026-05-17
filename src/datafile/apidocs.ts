@@ -1,35 +1,7 @@
-import {
-  TMDBIcon,
-  SpotifyIcon,
-  YouTubeIcon,
-  StripeIcon,
-  PlaidIcon,
-  CoinGeckoIcon,
-  GitHubIcon,
-  DiscordIcon,
-  CloudinaryIcon,
-  GoogleMapsIcon,
-  OpenWeatherIcon,
-  ScraperAPIIcon,
-  BrowserlessIcon,
-  Auth0Icon,
-  HIBPIcon,
-  AirtableIcon,
-  NotionIcon,
-  FacebookIcon,
-  TwilioIcon,
-  SendGridIcon,
-  MailchimpIcon,
-  OpenAIIcon,
-  HuggingFaceIcon,
-  GoogleVisionIcon,
-  NewsAPIIcon,
-  BitlyIcon,
-} from "../components/icon";
 import type { Tool } from "./types";
 
 export const DOCS_APIS: Tool[] = [
-  //Entertainment
+  // Entertainment
   {
     id: "d1",
     title: "TMDB",
@@ -38,7 +10,7 @@ export const DOCS_APIS: Tool[] = [
       "The Movie Database (TMDB) API provides access to data about movies and TV shows.",
     link: "https://www.themoviedb.org/",
     docLink: "https://developers.themoviedb.org/3/getting-started/introduction",
-    icon: TMDBIcon,
+    image: "src/img/categories/entertainment/tmdb.svg",
   },
   {
     id: "d2",
@@ -48,20 +20,19 @@ export const DOCS_APIS: Tool[] = [
       "Access Spotify's full music catalog, manage playlists, and get personalized recommendations.",
     link: "https://spotify.com/",
     docLink: "https://developer.spotify.com/documentation/web-api/",
-    icon: SpotifyIcon,
+    image: "src/img/categories/entertainment/spotify.svg",
   },
   {
     id: "d3",
     title: "YouTube Data",
     category: "Entertainment",
     description:
-      "Embed YouTube functionality — search videos, manage channels, and retrieve statistics.",
+      "Embed YouTube functionality - search videos, manage channels, and retrieve statistics.",
     link: "https://developers.google.com/youtube",
     docLink: "https://developers.google.com/youtube/v3/docs",
-    icon: YouTubeIcon,
+    image: "src/img/categories/entertainment/youtube.svg",
   },
-
-  //Finance
+  // Finance
   {
     id: "d4",
     title: "Stripe",
@@ -70,7 +41,7 @@ export const DOCS_APIS: Tool[] = [
       "Integrate Stripe into your application to handle payments, subscriptions, and invoicing.",
     link: "https://stripe.com/",
     docLink: "https://docs.stripe.com/api",
-    icon: StripeIcon,
+    image: "src/img/categories/finance/stripe.svg",
   },
   {
     id: "d5",
@@ -80,20 +51,19 @@ export const DOCS_APIS: Tool[] = [
       "Open-banking platform that connects your app to thousands of banks for transactions.",
     link: "https://plaid.com/",
     docLink: "https://plaid.com/docs/",
-    icon: PlaidIcon,
+    image: "src/img/categories/finance/plaid.svg",
   },
   {
     id: "d6",
     title: "CoinGecko",
     category: "Finance",
     description:
-      "Comprehensive cryptocurrency data API — prices, market caps, and historical data.",
+      "Comprehensive cryptocurrency data API - prices, market caps, and historical data.",
     link: "https://www.coingecko.com/",
     docLink: "https://www.coingecko.com/api/documentation",
-    icon: CoinGeckoIcon,
+    image: "src/img/categories/finance/coingecko.svg",
   },
-
-  //Dev Tools
+  // Dev Tools
   {
     id: "d7",
     title: "GitHub",
@@ -102,17 +72,17 @@ export const DOCS_APIS: Tool[] = [
       "Automate workflows, manage repositories, and interact with GitHub's ecosystem.",
     link: "https://github.com/",
     docLink: "https://docs.github.com/en/rest",
-    icon: GitHubIcon,
+    image: "src/img/categories/dev_tools/github.svg",
   },
   {
     id: "d8",
     title: "Discord",
     category: "Dev Tools",
     description:
-      "Build Discord bots and apps — send messages, manage servers, and handle events.",
+      "Build Discord bots and apps - send messages, manage servers, and handle events.",
     link: "https://discord.com/developers",
     docLink: "https://discord.com/developers/docs/intro",
-    icon: DiscordIcon,
+    image: "src/img/categories/dev_tools/discord.svg",
   },
   {
     id: "d9",
@@ -122,9 +92,8 @@ export const DOCS_APIS: Tool[] = [
       "Upload, store, transform, and deliver images and videos via a powerful media API.",
     link: "https://cloudinary.com/",
     docLink: "https://cloudinary.com/documentation",
-    icon: CloudinaryIcon,
+    image: "src/img/categories/dev_tools/cloudinary.svg",
   },
-
   // Geolocation
   {
     id: "d10",
@@ -134,7 +103,7 @@ export const DOCS_APIS: Tool[] = [
       "Embed interactive maps, geocoding, routing, and places search into your application.",
     link: "https://maps.google.com/",
     docLink: "https://developers.google.com/maps",
-    icon: GoogleMapsIcon,
+    image: "src/img/categories/geolocation/google-map.png",
   },
   {
     id: "d11",
@@ -144,19 +113,18 @@ export const DOCS_APIS: Tool[] = [
       "Real-time weather conditions and 7-day forecasts for any location worldwide.",
     link: "https://openweathermap.org/",
     docLink: "https://openweathermap.org/api",
-    icon: OpenWeatherIcon,
+    image: "src/img/categories/geolocation/open-weather.png",
   },
-
-  //Scraping
+  // Scraping
   {
     id: "d12",
-    title: "ScraperAPI",
+    title: "Scraper",
     category: "Scraping",
     description:
       "Handle proxies and CAPTCHAs automatically to scrape any web page easily.",
     link: "https://www.scraperapi.com/",
     docLink: "https://www.scraperapi.com/documentation/",
-    icon: ScraperAPIIcon,
+    image: "src/img/categories/scraping/scraperapi.svg",
   },
   {
     id: "d13",
@@ -166,10 +134,9 @@ export const DOCS_APIS: Tool[] = [
       "Run headless Chrome in the cloud for web scraping and automated testing.",
     link: "https://www.browserless.io/",
     docLink: "https://docs.browserless.io/",
-    icon: BrowserlessIcon,
+    image: "src/img/categories/scraping/browserless.svg",
   },
-
-  //Security
+  // Security
   {
     id: "d14",
     title: "Auth0",
@@ -178,7 +145,7 @@ export const DOCS_APIS: Tool[] = [
       "Add authentication and authorization with social login, MFA, and SSO support.",
     link: "https://auth0.com/",
     docLink: "https://auth0.com/docs/api",
-    icon: Auth0Icon,
+    image: "src/img/categories/security/auth0.svg",
   },
   {
     id: "d15",
@@ -188,10 +155,9 @@ export const DOCS_APIS: Tool[] = [
       "Check whether email addresses or passwords have been exposed in data breaches.",
     link: "https://haveibeenpwned.com/",
     docLink: "https://haveibeenpwned.com/API/v3",
-    icon: HIBPIcon,
+    image: "src/img/categories/security/haveibeenpwned.svg",
   },
-
-  //Business
+  // Business
   {
     id: "d16",
     title: "Airtable",
@@ -200,7 +166,7 @@ export const DOCS_APIS: Tool[] = [
       "Read, create, and update records in Airtable bases for flexible workflows.",
     link: "https://airtable.com/",
     docLink: "https://airtable.com/developers/web/api/introduction",
-    icon: AirtableIcon,
+    image: "src/img/categories/business/airtable.png",
   },
   {
     id: "d17",
@@ -210,7 +176,7 @@ export const DOCS_APIS: Tool[] = [
       "Integrate with Notion workspaces to manage pages and databases programmatically.",
     link: "https://www.notion.so/",
     docLink: "https://developers.notion.com/",
-    icon: NotionIcon,
+    image: "src/img/categories/business/notion-logo.png",
   },
   {
     id: "d18",
@@ -220,10 +186,9 @@ export const DOCS_APIS: Tool[] = [
       "Access Facebook pages, user data, ads, and insights for social integrations.",
     link: "https://developers.facebook.com/",
     docLink: "https://developers.facebook.com/docs/graph-api",
-    icon: FacebookIcon,
+    image: "src/img/categories/business/meta-facebook.png",
   },
-
-  //Communication
+  // Communication
   {
     id: "d19",
     title: "Twilio",
@@ -232,7 +197,7 @@ export const DOCS_APIS: Tool[] = [
       "Send and receive SMS, voice calls, and WhatsApp messages via cloud API.",
     link: "https://www.twilio.com/",
     docLink: "https://www.twilio.com/docs/usage/api",
-    icon: TwilioIcon,
+    image: "src/img/categories/communication/twilio-logo.svg",
   },
   {
     id: "d20",
@@ -242,7 +207,7 @@ export const DOCS_APIS: Tool[] = [
       "Deliver transactional and marketing emails at scale with real-time analytics.",
     link: "https://sendgrid.com/",
     docLink: "https://docs.sendgrid.com/api-reference",
-    icon: SendGridIcon,
+    image: "src/img/categories/communication/sendgrid-twilio.svg",
   },
   {
     id: "d21",
@@ -252,19 +217,18 @@ export const DOCS_APIS: Tool[] = [
       "Manage email campaigns, subscriber lists, and automations for marketing.",
     link: "https://mailchimp.com/",
     docLink: "https://mailchimp.com/developer/marketing/api/",
-    icon: MailchimpIcon,
+    image: "src/img/categories/communication/mailchimp.svg",
   },
-
-  //AI/ML
+  // AI/ML
   {
     id: "d22",
     title: "OpenAI",
     category: "AI/ML",
     description:
-      "Access GPT-4, DALL·E, and Whisper for language and image generation.",
+      "Access GPT-4, DALL-E, and Whisper for language and image generation.",
     link: "https://openai.com/",
     docLink: "https://platform.openai.com/docs/api-reference",
-    icon: OpenAIIcon,
+    image: "src/img/categories/ai-ml/openai.svg",
   },
   {
     id: "d23",
@@ -274,7 +238,7 @@ export const DOCS_APIS: Tool[] = [
       "Run thousands of open-source NLP, vision, and audio models via Inference API.",
     link: "https://huggingface.co/",
     docLink: "https://huggingface.co/docs/api-inference",
-    icon: HuggingFaceIcon,
+    image: "src/img/categories/ai-ml/huggingface.svg",
   },
   {
     id: "d24",
@@ -284,10 +248,9 @@ export const DOCS_APIS: Tool[] = [
       "Detect faces, labels, and text in images using Google's pre-trained ML models.",
     link: "https://cloud.google.com/vision",
     docLink: "https://cloud.google.com/vision/docs/reference/rest",
-    icon: GoogleVisionIcon,
+    image: "src/img/categories/ai-ml/google-vision.svg",
   },
-
-  //Marketing
+  // Marketing
   {
     id: "d25",
     title: "NewsAPI",
@@ -296,7 +259,7 @@ export const DOCS_APIS: Tool[] = [
       "Aggregate live headlines and articles from over 80,000 news sources.",
     link: "https://newsapi.org/",
     docLink: "https://newsapi.org/docs",
-    icon: NewsAPIIcon,
+    image: "src/img/categories/marketing/newsapi.svg",
   },
   {
     id: "d26",
@@ -306,6 +269,6 @@ export const DOCS_APIS: Tool[] = [
       "Shorten URLs, create branded links, and retrieve campaign analytics.",
     link: "https://bitly.com/",
     docLink: "https://dev.bitly.com/",
-    icon: BitlyIcon,
+    image: "src/img/categories/marketing/bitly.png",
   },
 ];

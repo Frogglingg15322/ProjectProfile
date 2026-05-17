@@ -1,14 +1,4 @@
-import {
-  Globe,
-  Share2,
-  Coins,
-  Box,
-  MapPin,
-  Activity,
-  Search,
-  Cpu,
-} from "lucide-react";
-import { type Project, type Tool, type ApiCategory } from "./types";
+import { type Project, type ApiCategory, type ApiStart } from "./types";
 
 export const PROJECTS: Project[] = [
   {
@@ -22,7 +12,7 @@ export const PROJECTS: Project[] = [
   },
 ];
 
-export const HOME_APIS: Tool[] = [
+export const HOME_APIS: ApiStart[] = [
   {
     id: "t1",
     title: "Fixer",
@@ -30,7 +20,7 @@ export const HOME_APIS: Tool[] = [
     description: "Foreign exchange rates and currency conversion JSON API.",
     link: "https://fixer.io/?utm_source=APILayerHomepage&utm_medium=Referral",
     docLink: "https://fixer.io/documentation",
-    icon: Coins,
+    image: "src/img/api_home/fixer.svg",
   },
   {
     id: "t2",
@@ -39,7 +29,7 @@ export const HOME_APIS: Tool[] = [
     description: "Real-time, Intraday & Historical Market Data API.",
     link: "https://mediastack.com/",
     docLink: "https://mediastack.com/documentation",
-    icon: Share2,
+    image: "src/img/api_home/mediastack.svg",
   },
   {
     id: "t3",
@@ -49,7 +39,7 @@ export const HOME_APIS: Tool[] = [
       "Lookup IP address location and geolocation information accurately.",
     link: "https://ipapi.co/",
     docLink: "https://ipapi.co/documentation",
-    icon: Globe,
+    image: "src/img/api_home/ipapi.svg",
   },
   {
     id: "t4",
@@ -59,7 +49,7 @@ export const HOME_APIS: Tool[] = [
       "Reliable Exchange Rates & Currency Conversion for your Business.",
     link: "https://currencylayer.com/",
     docLink: "https://currencylayer.com/documentation",
-    icon: Box,
+    image: "src/img/api_home/currency_data.svg",
   },
   {
     id: "t5",
@@ -68,7 +58,7 @@ export const HOME_APIS: Tool[] = [
     description: "Forward and reverse batch geocoding for any global address.",
     link: "https://positionstack.com/",
     docLink: "https://positionstack.com/documentation",
-    icon: MapPin,
+    image: "src/img/api_home/positionstack.svg",
   },
   {
     id: "t6",
@@ -77,7 +67,7 @@ export const HOME_APIS: Tool[] = [
     description: "Global Phone Number Validation & Lookup JSON API.",
     link: "https://numverify.com/",
     docLink: "https://numverify.com/documentation",
-    icon: Activity,
+    image: "src/img/api_home/numverify.svg",
   },
   {
     id: "t7",
@@ -86,7 +76,7 @@ export const HOME_APIS: Tool[] = [
     description: "Real-time Search Engine Result Page (SERP) Scraper API.",
     link: "https://serpstack.com/",
     docLink: "https://serpstack.com/documentation",
-    icon: Search,
+    image: "src/img/api_home/serpstack.svg",
   },
   {
     id: "t8",
@@ -95,7 +85,7 @@ export const HOME_APIS: Tool[] = [
     description: "Locate and Identify Website Visitors by IP Address.",
     link: "https://ipstack.com/",
     docLink: "https://ipstack.com/documentation",
-    icon: MapPin,
+    image: "src/img/api_home/ipstack.svg",
   },
   {
     id: "t9",
@@ -105,20 +95,20 @@ export const HOME_APIS: Tool[] = [
       "Analyze browser user-agent strings for device and OS detection.",
     link: "https://userstack.com/",
     docLink: "https://userstack.com/documentation",
-    icon: Cpu,
+    image: "src/img/api_home/userstack.svg",
   },
 ];
 
-export const TOOLS = [...HOME_APIS];
+export const API_STARTS = [...HOME_APIS];
 
 export const API_CATEGORIES: ApiCategory[] = [
-  { id: "c1", title: "Dev Tools", count: 10 },
-  { id: "c2", title: "Marketing", count: 13 },
-  { id: "c3", title: "Finance", count: 10 },
-  { id: "c4", title: "Geolocation", count: 10 },
-  { id: "c5", title: "Scraping", count: 11 },
-  { id: "c6", title: "Security", count: 10 },
-  { id: "c7", title: "Business", count: 8 },
-  { id: "c8", title: "Communication", count: 7 },
-  { id: "c9", title: "AI/ML", count: 4 },
+  { id: "c1", title: "Dev Tools", count: 3 },
+  { id: "c2", title: "Marketing", count: 2 },
+  { id: "c3", title: "Finance", count: 3 },
+  { id: "c4", title: "Geolocation", count: 2 },
+  { id: "c5", title: "Scraping", count: 2 },
+  { id: "c6", title: "Security", count: 2 },
+  { id: "c7", title: "Business", count: 3 },
+  { id: "c8", title: "Communication", count: 3 },
+  { id: "c9", title: "AI/ML", count: 3 },
 ];

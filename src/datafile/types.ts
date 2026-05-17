@@ -1,5 +1,3 @@
-import React from "react";
-
 export interface Project {
   id: string;
   title: string;
@@ -16,7 +14,7 @@ export interface Tool {
   link: string;
   docLink: string;
   category: string;
-  icon: React.ElementType;
+  image: string;
 }
 
 export interface ApiCategory {
@@ -25,4 +23,13 @@ export interface ApiCategory {
   count: number;
 }
 
-export type ThemeMode = "light" | "dark";
+export interface ApiStart {
+  id: string;
+  title: string;
+  description: string;
+  link: string;
+  docLink: string;
+  category: string;
+  image: string;
+}
+
